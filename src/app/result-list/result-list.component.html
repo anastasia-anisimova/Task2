@@ -1,0 +1,5 @@
+<div class="item-container" *ngFor="let item of result$ | async">
+  <div><h2>Video id:</h2> {{item.id}}</div>
+  <div><h2>Video title:</h2>  {{item.title}}</div>
+  <div><h2>Video description:</h2> {{item.description}}</div>
+</div>
