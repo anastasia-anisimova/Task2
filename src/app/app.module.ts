@@ -5,6 +5,8 @@ import {AppComponent} from './app.component';
 import {ResultListComponent} from './result-list/result-list.component';
 import {HttpClientModule} from '@angular/common/http';
 import {YoutubeDataService} from './result-list/main/youtube-data.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatPaginatorModule, MatTableModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -13,7 +15,10 @@ import {YoutubeDataService} from './result-list/main/youtube-data.service';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   providers: [YoutubeDataService],
   bootstrap: [AppComponent]

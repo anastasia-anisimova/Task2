@@ -4,3 +4,15 @@
   max-width: 1000px;
   background-color: bisque;
 }
+
+.mat-table {
+  margin: 20px;
+}
+
+td, th {
+  padding: 10px !important;
+}
+
+.mat-column-title {
+  min-width: 200px;
+}
