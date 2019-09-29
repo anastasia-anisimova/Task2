@@ -6,7 +6,14 @@ import {ResultListComponent} from './result-list/result-list.component';
 import {HttpClientModule} from '@angular/common/http';
 import {YoutubeDataService} from './result-list/main/youtube-data.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatFormFieldModule, MatIconModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatTableModule
+} from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
@@ -24,6 +31,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCheckboxModule,
+    MatIconModule,
   ],
   providers: [YoutubeDataService],
   bootstrap: [AppComponent]

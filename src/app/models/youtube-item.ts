@@ -1,7 +1,7 @@
 export class YoutubeItem {
 
   public static convert(item: any): YoutubeItem {
-    return new YoutubeItem(item.id, item.snippet.title, item.snippet.description);
+    return new YoutubeItem(item.id, item.snippet.title, item.snippet.description, item.isFavorite);
   }
 
   public static convertFromArray(items: any[]): YoutubeItem[] { // типизировать
@@ -10,6 +10,7 @@ export class YoutubeItem {
 
   constructor(public id: string,
               public title: string,
-              public description: string) {
+              public description: string,
+              public isFavorite = false) {
   }
 }

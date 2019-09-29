@@ -27,7 +27,7 @@ export class ResultListComponent implements OnInit {
         title: '',
       }
     );
-    this.displayedColumns = ['id', 'title', 'description'];
+    this.displayedColumns = ['favorites', 'id', 'title', 'description'];
     this.result$ = this.service.youtubeItems$;
     this.totalResults$ = this.service.totalResults$;
   }
@@ -43,6 +43,11 @@ export class ResultListComponent implements OnInit {
 
   onFiltersSubmit() {
     this.service.setFilters(this.filtersGroup.get('title').value);
+  }
+
+  changeFavorite(item: YoutubeItem) {
+    console.log(item);
+    // this.service.setFavorite();
   }
 
 }

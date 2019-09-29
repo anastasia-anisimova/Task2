@@ -26,3 +26,12 @@ td, th {
 .mat-column-title {
   min-width: 200px;
 }
+
+.star-icon {
+  color: antiquewhite;
+  cursor: pointer;
+}
+
+.starred-icon {
+  color: sandybrown;
+}
