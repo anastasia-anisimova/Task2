@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {YoutubeDataService} from './main/youtube-data.service';
 import {shareReplay} from 'rxjs/operators';
 import {YoutubeItem} from '../models/youtube-item';
+import {PageEvent} from '@angular/material';
 
 @Component({
   selector: 'app-result-list',
@@ -14,22 +15,23 @@ import {YoutubeItem} from '../models/youtube-item';
 export class ResultListComponent implements OnInit {
   public result$: Observable<YoutubeItem[]>;
   public displayedColumns: string[];
+  public totalResults$: Observable<number>;
 
   constructor(private service: YoutubeDataService) {
   }
 
   ngOnInit() {
-    this.displayedColumns = ['number', 'id', 'title', 'description'];
+    this.displayedColumns = ['id', 'title', 'description'];
     this.result$ = this.service.youtubeItems$;
+    this.totalResults$ = this.service.totalResults$;
   }
 
-  onAddItems() {
-    this.service.getMoreItems();
+  pageEvent(event: PageEvent) {
+    if (event.previousPageIndex < event.pageIndex) {
+      this.service.getMoreItems();
+    } else if (event.previousPageIndex > event.pageIndex) {
+      this.service.getLessItems();
+    }
   }
-
-  onRemoveItems() {
-    this.service.getLessItem();
-  }
-
 
 }

@@ -9,6 +9,7 @@ export class YoutubeDataService {
 
   public youtubeItems$: Observable<YoutubeItem[]>;
   public tokenChange: BehaviorSubject<string> = new BehaviorSubject('');
+  public totalResults$: Observable<number>;
 
   private nextToken: string;
   private prevToken: string;
@@ -23,11 +24,17 @@ export class YoutubeDataService {
     const data$ = this.tokenChange.asObservable().pipe(
       switchMap(token => this.http.get(this.url + token)),
       tap((data: any) => {
-        this.nextToken = data.nextPageToken;
-        this.prevToken = data.prevPageToken;
+        this.nextToken = data.nextPageToken || '';
+        this.prevToken = data.prevPageToken || '';
       }),
       shareReplay(1),
     );
+
+    this.totalResults$ = data$.pipe(
+      map(data => data.pageInfo.totalResults),
+      shareReplay(1),
+    );
+
 
     this.youtubeItems$ = data$.pipe(
       map((val: any) => YoutubeItem.convertFromArray(val.items)),  // типизировать youtube data
@@ -39,7 +46,7 @@ export class YoutubeDataService {
     this.tokenChange.next(this.nextToken);
   }
 
-  getLessItem() {
+  getLessItems() {
     this.tokenChange.next(this.prevToken);
   }
 

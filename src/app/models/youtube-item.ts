@@ -1,15 +1,10 @@
 export class YoutubeItem {
 
   public static convert(item: any): YoutubeItem {
-    return {
-      id: item.id,
-      title: item.snippet.title,
-      description: item.snippet.description
-    };
+    return new YoutubeItem(item.id, item.snippet.title, item.snippet.description);
   }
 
   public static convertFromArray(items: any[]): YoutubeItem[] { // типизировать
-    console.log(items);
     return items.map(YoutubeItem.convert);
   }
 
