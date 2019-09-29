@@ -32,6 +32,7 @@ export class ResultListComponent implements OnInit {
     } else if (event.previousPageIndex > event.pageIndex) {
       this.service.getLessItems();
     }
+    window.scrollTo(0, 0);
   }
 
 }
