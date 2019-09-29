@@ -4,6 +4,7 @@ import {YoutubeDataService} from './main/youtube-data.service';
 import {shareReplay} from 'rxjs/operators';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-result-list',
@@ -16,11 +17,16 @@ export class ResultListComponent implements OnInit {
   public result$: Observable<YoutubeItem[]>;
   public displayedColumns: string[];
   public totalResults$: Observable<number>;
+  public filtersGroup: FormGroup;
 
-  constructor(private service: YoutubeDataService) {
+  constructor(private service: YoutubeDataService, private fb: FormBuilder) {
   }
 
   ngOnInit() {
+    this.filtersGroup = this.fb.group({
+        title: '',
+      }
+    );
     this.displayedColumns = ['id', 'title', 'description'];
     this.result$ = this.service.youtubeItems$;
     this.totalResults$ = this.service.totalResults$;
@@ -33,6 +39,10 @@ export class ResultListComponent implements OnInit {
       this.service.getLessItems();
     }
     window.scrollTo(0, 0);
+  }
+
+  onFiltersSubmit() {
+    this.service.setFilter(this.filtersGroup.get('title').value);
   }
 
 }

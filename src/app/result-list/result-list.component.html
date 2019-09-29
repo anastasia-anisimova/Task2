@@ -1,4 +1,22 @@
 <div class="main-container">
+
+  <form class="form-container"
+        [formGroup]="filtersGroup"
+        (ngSubmit)="onFiltersSubmit()">
+
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput
+             formControlName="title"
+             placeholder="Name...">
+    </mat-form-field>
+
+    <button mat-raised-button
+            color="primary">Find
+    </button>
+  </form>
+
+
   <table mat-table
          [dataSource]="result$ | async"
          class="mat-elevation-z8">

@@ -1,15 +1,21 @@
 import {Injectable} from '@angular/core';
-import {map, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {YoutubeItem} from '../../models/youtube-item';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 
 @Injectable()
 export class YoutubeDataService {
 
+  private static findEntry(value: string, findValue: string): boolean {
+    return findValue ? value.toLowerCase().indexOf(findValue.toLowerCase()) > -1 : true;
+  }
+
   public youtubeItems$: Observable<YoutubeItem[]>;
   public tokenChange: BehaviorSubject<string> = new BehaviorSubject('');
   public totalResults$: Observable<number>;
+
+  private filtersSubj: BehaviorSubject<string> = new BehaviorSubject('');
 
   private nextToken: string;
   private prevToken: string;
@@ -38,6 +44,8 @@ export class YoutubeDataService {
 
     this.youtubeItems$ = data$.pipe(
       map((val: any) => YoutubeItem.convertFromArray(val.items)),  // типизировать youtube data
+      withLatestFrom(this.filtersSubj),
+      map(([data, filters]) => this.filterData(data, filters)),
       shareReplay(1),
     );
   }
@@ -48,6 +56,14 @@ export class YoutubeDataService {
 
   getLessItems() {
     this.tokenChange.next(this.prevToken);
+  }
+
+  setFilter(title: string) {
+    this.filtersSubj.next(title);
+  }
+
+  private filterData(arr: YoutubeItem[], filters: string) {
+    return arr.filter(val => YoutubeDataService.findEntry(val.title, filters));
   }
 
 }

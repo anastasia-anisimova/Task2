@@ -5,6 +5,10 @@
   background-color: bisque;
 }
 
+.form-container mat-form-field {
+  width: 400px;
+}
+
 .mat-table {
   margin: 20px;
 }
