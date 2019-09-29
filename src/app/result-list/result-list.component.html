@@ -1,27 +1,5 @@
-<table mat-table
-       [dataSource]="result$ | async"
-       class="mat-elevation-z8">
-
-  <ng-container matColumnDef="number">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef>Id</th>
-    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef>Title</th>
-    <td mat-cell *matCellDef="let element">{{element.title}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="description">
-    <th mat-header-cell *matHeaderCellDef>Description</th>
-    <td mat-cell *matCellDef="let element">{{element.description}}</td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+<div class="item-container" *ngFor="let item of result$ | async">
+  <div><h2>Video id:</h2> {{item.id}}</div>
+  <div><h2>Video title:</h2>  {{item.title}}</div>
+  <div><h2>Video description:</h2> {{item.description}}</div>
+</div>
