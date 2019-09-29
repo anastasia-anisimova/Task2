@@ -42,7 +42,7 @@ export class ResultListComponent implements OnInit {
   }
 
   onFiltersSubmit() {
-    this.service.setFilter(this.filtersGroup.get('title').value);
+    this.service.setFilters(this.filtersGroup.get('title').value);
   }
 
 }
