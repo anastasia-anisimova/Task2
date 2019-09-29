@@ -9,6 +9,7 @@ export class YoutubeItem {
   }
 
   public static convertFromArray(items: any[]): YoutubeItem[] { // типизировать
+    console.log(items);
     return items.map(YoutubeItem.convert);
   }
 
