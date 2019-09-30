@@ -5,6 +5,7 @@ import {shareReplay} from 'rxjs/operators';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {YoutubeDataFilters} from '../models/youtube-data-filters';
 
 @Component({
   selector: 'app-result-list',
@@ -27,7 +28,7 @@ export class ResultListComponent implements OnInit {
         title: '',
       }
     );
-    this.displayedColumns = ['id', 'title', 'description'];
+    this.displayedColumns = ['favorites', 'id', 'title', 'channelTitle'];
     this.result$ = this.service.youtubeItems$;
     this.totalResults$ = this.service.totalResults$;
   }
@@ -47,7 +48,14 @@ export class ResultListComponent implements OnInit {
 
   changeFavorite(item: YoutubeItem) {
     console.log(item);
-    // this.service.setFavorite();
+    this.service.setFavorite(item);
   }
 
+  getFavorites() {
+    this.service.getFavorites();
+  }
+
+  getAll() {
+    this.service.getAll();
+  }
 }
