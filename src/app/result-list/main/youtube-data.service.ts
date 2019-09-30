@@ -11,7 +11,6 @@ export class YoutubeDataService {
   public youtubeItems$: Observable<YoutubeItem[]>;
   public totalResults$: Observable<number>;
   private favoritesSubj: BehaviorSubject<YoutubeItem[]> = new BehaviorSubject(null);
-  private totalCountSubj: BehaviorSubject<number> = new BehaviorSubject(null);
   private tokenChangeSubj: BehaviorSubject<string> = new BehaviorSubject('');
   private filtersSubj: BehaviorSubject<YoutubeDataFilters> = new BehaviorSubject({});
   private nextToken: string;

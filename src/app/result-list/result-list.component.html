@@ -61,6 +61,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
   <mat-paginator [pageSize]="50"
+                 *ngIf="!hideFavorites"
                  [length]="totalResults$ | async"
                  (page)="pageEvent($event)">
   </mat-paginator>

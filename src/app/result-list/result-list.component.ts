@@ -1,11 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {YoutubeDataService} from './main/youtube-data.service';
-import {map, shareReplay} from 'rxjs/operators';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {YoutubeDataFilters} from '../models/youtube-data-filters';
 
 @Component({
   selector: 'app-result-list',
@@ -19,6 +17,7 @@ export class ResultListComponent implements OnInit {
   public displayedColumns: string[];
   public totalResults$: Observable<number>;
   public filtersGroup: FormGroup;
+  public hideFavorites = false;
 
   constructor(private service: YoutubeDataService, private fb: FormBuilder) {
   }
@@ -42,14 +41,6 @@ export class ResultListComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
-  getMoreItems() {
-    this.service.getMoreItems();
-  }
-
-  getLessItems() {
-    this.service.getLessItems();
-  }
-
   onFiltersSubmit() {
     this.service.setFilters(this.filtersGroup.get('title').value);
   }
@@ -59,10 +50,12 @@ export class ResultListComponent implements OnInit {
   }
 
   getFavorites() {
+    this.hideFavorites = true;
     this.service.getFavorites();
   }
 
   getAll() {
+    this.hideFavorites = false;
     this.service.getAll();
   }
 }
