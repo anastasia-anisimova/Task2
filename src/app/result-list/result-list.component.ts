@@ -27,7 +27,7 @@ export class ResultListComponent implements OnInit {
         title: '',
       }
     );
-    this.displayedColumns = ['favorites', 'id', 'title', 'description'];
+    this.displayedColumns = ['id', 'title', 'description'];
     this.result$ = this.service.youtubeItems$;
     this.totalResults$ = this.service.totalResults$;
   }
