@@ -32,12 +32,12 @@
          class="mat-elevation-z8">
 
     <ng-container matColumnDef="favorites">
-      <th mat-header-cell *matHeaderCellDef>Starred
+      <th mat-header-cell *matHeaderCellDef>Favorite
       </th>
       <td mat-cell *matCellDef="let element">
         <mat-icon class="star-icon"
                   [ngClass]="{'starred-icon': element.isFavorite}"
-                  (click)="changeFavorite(element)">star
+                  (click)="setFavorite(element)">star
         </mat-icon>
       </td>
     </ng-container>
@@ -64,4 +64,5 @@
                  [length]="totalResults$ | async"
                  (page)="pageEvent($event)">
   </mat-paginator>
+
 </div>

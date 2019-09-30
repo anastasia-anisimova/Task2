@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {YoutubeDataService} from './main/youtube-data.service';
-import {shareReplay} from 'rxjs/operators';
+import {map, shareReplay} from 'rxjs/operators';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -42,12 +42,19 @@ export class ResultListComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
+  getMoreItems() {
+    this.service.getMoreItems();
+  }
+
+  getLessItems() {
+    this.service.getLessItems();
+  }
+
   onFiltersSubmit() {
     this.service.setFilters(this.filtersGroup.get('title').value);
   }
 
-  changeFavorite(item: YoutubeItem) {
-    console.log(item);
+  setFavorite(item: YoutubeItem) {
     this.service.setFavorite(item);
   }
 
