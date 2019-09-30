@@ -4,6 +4,7 @@ import {YoutubeDataService} from './main/youtube-data.service';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {map, shareReplay} from 'rxjs/operators';
 
 @Component({
   selector: 'app-result-list',
@@ -18,6 +19,7 @@ export class ResultListComponent implements OnInit {
   public totalResults$: Observable<number>;
   public filtersGroup: FormGroup;
   public hideFavorites = false;
+  public isEmpty$: Observable<boolean>;
 
   constructor(private service: YoutubeDataService, private fb: FormBuilder) {
   }
@@ -28,8 +30,14 @@ export class ResultListComponent implements OnInit {
       }
     );
     this.displayedColumns = ['favorites', 'id', 'title', 'channelTitle'];
-    this.result$ = this.service.youtubeItems$;
+    this.result$ = this.service.youtubeItems$.pipe(
+      shareReplay(1),
+    );
+    this.isEmpty$ = this.result$.pipe(
+      map(res => res.length < 1),
+    );
     this.totalResults$ = this.service.totalResults$;
+
   }
 
   pageEvent(event: PageEvent) {

@@ -1,14 +1,15 @@
 <div class="main-container">
 
+  <ng-template #empty>Empty...</ng-template>
+
   <form class="form-container"
         [formGroup]="filtersGroup"
         (ngSubmit)="onFiltersSubmit()">
 
     <mat-form-field>
-      <mat-label>Title</mat-label>
       <input matInput
              formControlName="title"
-             placeholder="Name...">
+             placeholder="Title...">
     </mat-form-field>
 
     <button mat-raised-button
@@ -28,6 +29,7 @@
   </button>
 
   <table mat-table
+         *ngIf="!(isEmpty$ | async); else empty"
          [dataSource]="result$ | async"
          class="mat-elevation-z8">
 
