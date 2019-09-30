@@ -44,20 +44,19 @@ export class YoutubeDataService {
       shareReplay(1),
     );
 
-    this.youtubeItems$ = combineLatest([data$, this.filtersSubj, this.favoritesSubj]).pipe(
-      map(([data, filters, favorites]) => favorites ? favorites : this.prepareDate(data.items, filters)),  // типизировать youtube data
+    this.youtubeItems$ = combineLatest([data$, this.favoritesSubj, this.filtersSubj]).pipe(
+      map(([data, favorites, filters]) => this.filterData(favorites ? favorites : this.prepareDate(data.items), filters)),  // типизировать youtube data
       shareReplay(1),
     );
   }
 
-  private prepareDate(items: any, filters: YoutubeDataFilters) {
-    const convertedData: YoutubeItem[] = YoutubeItem.convertFromArray(items)
+  private prepareDate(items: any): YoutubeItem[] {
+    return YoutubeItem.convertFromArray(items)
       .map(item => {
         item.isFavorite = YoutubeDataService.checkIsFavorite(item);
         return item;
       });
 
-    return this.filterData(convertedData, filters);
   }
 
   private filterData(arr: YoutubeItem[], filters: YoutubeDataFilters) {

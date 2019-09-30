@@ -5,6 +5,7 @@ import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {map, shareReplay} from 'rxjs/operators';
+import {YoutubeDataFilters} from '../models/youtube-data-filters';
 
 @Component({
   selector: 'app-result-list',
@@ -18,7 +19,7 @@ export class ResultListComponent implements OnInit {
   public displayedColumns: string[];
   public totalResults$: Observable<number>;
   public filtersGroup: FormGroup;
-  public hideFavorites = false;
+  public hidePaginator = false;
   public isEmpty$: Observable<boolean>;
 
   constructor(private service: YoutubeDataService, private fb: FormBuilder) {
@@ -50,7 +51,10 @@ export class ResultListComponent implements OnInit {
   }
 
   onFiltersSubmit() {
-    this.service.setFilters(this.filtersGroup.get('title').value);
+    const filters: YoutubeDataFilters = {
+      videoTitle: this.filtersGroup.get('title').value
+    };
+    this.service.setFilters(filters);
   }
 
   setFavorite(item: YoutubeItem) {
@@ -58,12 +62,12 @@ export class ResultListComponent implements OnInit {
   }
 
   getFavorites() {
-    this.hideFavorites = true;
+    this.hidePaginator = true;
     this.service.getFavorites();
   }
 
   getAll() {
-    this.hideFavorites = false;
+    this.hidePaginator = false;
     this.service.getAll();
   }
 }
