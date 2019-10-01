@@ -4,7 +4,7 @@ import {YoutubeDataService} from './main/youtube-data.service';
 import {YoutubeItem} from '../models/youtube-item';
 import {PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {map, shareReplay} from 'rxjs/operators';
+import {map, pairwise, reduce, scan, shareReplay, startWith, take, tap} from 'rxjs/operators';
 import {YoutubeDataFilters} from '../models/youtube-data-filters';
 
 @Component({
@@ -41,14 +41,22 @@ export class ResultListComponent implements OnInit {
 
   }
 
-  pageEvent(event: PageEvent) {
-    if (event.previousPageIndex < event.pageIndex) {
-      this.service.getMoreItems();
-    } else if (event.previousPageIndex > event.pageIndex) {
-      this.service.getLessItems();
-    }
-    window.scrollTo(0, 0);
+  next() {
+    this.service.getMoreItems();
   }
+
+  prev() {
+    this.service.getLessItems();
+  }
+
+  // pageEvent(event: PageEvent) {
+  //   if (event.previousPageIndex < event.pageIndex) {
+  //     this.service.getMoreItems();
+  //   } else if (event.previousPageIndex > event.pageIndex) {
+  //     this.service.getLessItems();
+  //   }
+  //   window.scrollTo(0, 0);
+  // }
 
   onFiltersSubmit() {
     const filters: YoutubeDataFilters = {

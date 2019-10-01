@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {map, pairwise, reduce, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {YoutubeItem} from '../../models/youtube-item';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
@@ -17,8 +17,11 @@ export class YoutubeDataService {
   private prevToken: string;
   private readonly apiKey: string = 'AIzaSyAJZMeQPTxh4te83NJt9l5FTQjQ4-wNhfE';
   private readonly BASE_URL: string = 'https://www.googleapis.com/youtube/v3/';
+  // private readonly TOP_ANIMAL_VIDEO_URL2 =
+  //   `${this.BASE_URL}videos?part=snippet&chart=mostPopular&maxResults=50&videoCategoryId=15&key=${this.apiKey}&pageToken=`;
+
   private readonly TOP_ANIMAL_VIDEO_URL =
-    `${this.BASE_URL}videos?part=snippet&chart=mostPopular&maxResults=50&videoCategoryId=15&key=${this.apiKey}&pageToken=`;
+    `${this.BASE_URL}search?part=snippet&order=rating&q=wild&maxResults=50&type=video&videoCategoryId=15&key=${this.apiKey}&pageToken=`;
 
   private static findEntry(value: string, findValue: string): boolean {
     return findValue ? value.toLowerCase().indexOf(findValue.toLowerCase()) > -1 : true;
@@ -33,6 +36,7 @@ export class YoutubeDataService {
     const data$ = this.tokenChangeSubj.asObservable().pipe(
       switchMap(token => this.http.get(this.TOP_ANIMAL_VIDEO_URL + token)),
       tap((data: any) => {
+        console.log(data);
         this.nextToken = data.nextPageToken || '';
         this.prevToken = data.prevPageToken || '';
       }),
