@@ -2,14 +2,16 @@
 
   <ng-template #empty>Empty...</ng-template>
 
+  <h2>Popular animals video</h2>
+
   <form class="form-container"
         [formGroup]="filtersGroup"
         (ngSubmit)="onFiltersSubmit()">
 
     <mat-form-field>
       <input matInput
-             formControlName="title"
-             placeholder="Title...">
+             formControlName="filter"
+             placeholder="Filter...">
     </mat-form-field>
 
     <button mat-raised-button
@@ -17,16 +19,19 @@
     </button>
   </form>
 
+  <div>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="isFavorites"
+            (click)="getFavorites()">Show favorites
+    </button>
 
-  <button mat-raised-button
-          color="primary"
-          (click)="getFavorites()">Show favorites
-  </button>
-
-  <button mat-raised-button
-          color="primary"
-          (click)="getAll()">Show all
-  </button>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!isFavorites"
+            (click)="getAll()">Show all
+    </button>
+  </div>
 
   <table mat-table
          *ngIf="!(isEmpty$ | async); else empty"
@@ -62,20 +67,11 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-<!--  <mat-paginator [pageSize]="50"-->
-<!--                 *ngIf="!hidePaginator"-->
-<!--                 [length]="totalResults$ | async"-->
-<!--                 (page)="pageEvent($event)">-->
-<!--  </mat-paginator>-->
-
-  <button mat-raised-button
-          color="primary"
-          (click)="next()">next
-  </button>
-
-  <button mat-raised-button
-          color="primary"
-          (click)="prev()">prev
-  </button>
+  <mat-paginator [pageSize]="50"
+                 #paginator
+                 *ngIf="!isFavorites"
+                 [length]="totalResults$ | async"
+                 (page)="pageEvent($event)">
+  </mat-paginator>
 
 </div>

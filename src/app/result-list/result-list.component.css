@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 20px;
 }
 
 td, th {
@@ -27,4 +28,8 @@ td, th {
 
 .starred-icon {
   color: sandybrown;
+}
+
+button {
+  margin: 5px;
 }

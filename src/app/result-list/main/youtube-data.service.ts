@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {map, pairwise, reduce, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {YoutubeItem} from '../../models/youtube-item';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {YoutubeDataFilters} from '../../models/youtube-data-filters';
 
 @Injectable()
 export class YoutubeDataService {
@@ -12,16 +11,23 @@ export class YoutubeDataService {
   public totalResults$: Observable<number>;
   private favoritesSubj: BehaviorSubject<YoutubeItem[]> = new BehaviorSubject(null);
   private tokenChangeSubj: BehaviorSubject<string> = new BehaviorSubject('');
-  private filtersSubj: BehaviorSubject<YoutubeDataFilters> = new BehaviorSubject({});
-  private nextToken: string;
-  private prevToken: string;
-  private readonly apiKey: string = 'AIzaSyAJZMeQPTxh4te83NJt9l5FTQjQ4-wNhfE';
+  private filtersSubj: BehaviorSubject<string> = new BehaviorSubject('');
+  private nextToken = '';
+  private prevToken = '';
+  private readonly apiKey: string = 'AIzaSyA5leN1_mVGySnLd_5eMVv8jHerQbZAWts';
   private readonly BASE_URL: string = 'https://www.googleapis.com/youtube/v3/';
-  // private readonly TOP_ANIMAL_VIDEO_URL2 =
-  //   `${this.BASE_URL}videos?part=snippet&chart=mostPopular&maxResults=50&videoCategoryId=15&key=${this.apiKey}&pageToken=`;
 
   private readonly TOP_ANIMAL_VIDEO_URL =
-    `${this.BASE_URL}search?part=snippet&order=rating&q=wild&maxResults=50&type=video&videoCategoryId=15&key=${this.apiKey}&pageToken=`;
+    `${this.BASE_URL}search?part=snippet&order=rating&maxResults=50&type=video&videoCategoryId=15&key=${this.apiKey}`;
+
+  public static setFavorite(item: YoutubeItem) {
+    item.isFavorite = !item.isFavorite;
+    if (localStorage.getItem(item.id)) {
+      localStorage.removeItem(item.id);
+    } else {
+      localStorage.setItem(item.id, JSON.stringify(item));
+    }
+  }
 
   private static findEntry(value: string, findValue: string): boolean {
     return findValue ? value.toLowerCase().indexOf(findValue.toLowerCase()) > -1 : true;
@@ -31,12 +37,22 @@ export class YoutubeDataService {
     return localStorage.getItem(item.id) !== null;
   }
 
+  private createUrl(token: string, filter: string): string {
+    let url = this.TOP_ANIMAL_VIDEO_URL;
+    if (token) {
+      url += `&pageToken=${token}`;
+    }
+    if (filter) {
+      url += `&q=${filter}`;
+    }
+    return url;
+  }
+
   constructor(public http: HttpClient) {
 
-    const data$ = this.tokenChangeSubj.asObservable().pipe(
-      switchMap(token => this.http.get(this.TOP_ANIMAL_VIDEO_URL + token)),
+    const data$ = combineLatest([this.tokenChangeSubj, this.filtersSubj]).pipe(
+      switchMap(([token, filter]) => this.http.get(this.createUrl(token, filter))),
       tap((data: any) => {
-        console.log(data);
         this.nextToken = data.nextPageToken || '';
         this.prevToken = data.prevPageToken || '';
       }),
@@ -49,9 +65,35 @@ export class YoutubeDataService {
     );
 
     this.youtubeItems$ = combineLatest([data$, this.favoritesSubj, this.filtersSubj]).pipe(
-      map(([data, favorites, filters]) => this.filterData(favorites ? favorites : this.prepareDate(data.items), filters)),  // типизировать youtube data
+      map(([data, favorites, filter]) => favorites ? this.filterData(favorites, filter) : this.prepareDate(data.items)),
       shareReplay(1),
     );
+  }
+
+  getMoreItems() {
+    this.tokenChangeSubj.next(this.nextToken);
+  }
+
+  getLessItems() {
+    this.tokenChangeSubj.next(this.prevToken);
+  }
+
+  setFilters(filter: string) {
+    this.filtersSubj.next(filter);
+  }
+
+  getFavorites() {
+    const items: YoutubeItem[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      items.push(JSON.parse(localStorage.getItem(key)));
+    }
+    this.favoritesSubj.next(items);
+  }
+
+  getAll() {
+    this.favoritesSubj.next(null);
+    this.tokenChangeSubj.next('');
   }
 
   private prepareDate(items: any): YoutubeItem[] {
@@ -63,46 +105,7 @@ export class YoutubeDataService {
 
   }
 
-  private filterData(arr: YoutubeItem[], filters: YoutubeDataFilters) {
-    let result: YoutubeItem[] = [];
-    if (filters.videoTitle !== null) {
-      result = arr.filter(val => YoutubeDataService.findEntry(val.title, filters.videoTitle));
-    }
-    return result;
-  }
-
-  getMoreItems() {
-    this.tokenChangeSubj.next(this.nextToken);
-  }
-
-  getLessItems() {
-    this.tokenChangeSubj.next(this.prevToken);
-  }
-
-  setFilters(filters: YoutubeDataFilters) {
-    this.filtersSubj.next(filters);
-  }
-
-  setFavorite(item: YoutubeItem) {
-    item.isFavorite = !item.isFavorite;
-    if (localStorage.getItem(item.id)) {
-      localStorage.removeItem(item.id);
-    } else {
-      localStorage.setItem(item.id, JSON.stringify(item));
-    }
-  }
-
-  getFavorites() {
-    const items: YoutubeItem[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      const value: YoutubeItem = JSON.parse(localStorage.getItem(key));
-      items.push(value);
-    }
-    this.favoritesSubj.next(items);
-  }
-
-  getAll() {
-    this.favoritesSubj.next(null);
+  private filterData(arr: YoutubeItem[], filter: string) {
+    return arr.filter(val => YoutubeDataService.findEntry(val.title, filter));
   }
 }

@@ -1,11 +1,10 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {YoutubeDataService} from './main/youtube-data.service';
 import {YoutubeItem} from '../models/youtube-item';
-import {PageEvent} from '@angular/material';
+import {MatPaginator, PageEvent} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {map, pairwise, reduce, scan, shareReplay, startWith, take, tap} from 'rxjs/operators';
-import {YoutubeDataFilters} from '../models/youtube-data-filters';
+import {map, shareReplay} from 'rxjs/operators';
 
 @Component({
   selector: 'app-result-list',
@@ -19,15 +18,18 @@ export class ResultListComponent implements OnInit {
   public displayedColumns: string[];
   public totalResults$: Observable<number>;
   public filtersGroup: FormGroup;
-  public hidePaginator = false;
   public isEmpty$: Observable<boolean>;
+  public isFavorites = false;
+
+  @ViewChild('paginator', {static: false})
+  paginator: MatPaginator;
 
   constructor(private service: YoutubeDataService, private fb: FormBuilder) {
   }
 
   ngOnInit() {
     this.filtersGroup = this.fb.group({
-        title: '',
+        filter: '',
       }
     );
     this.displayedColumns = ['favorites', 'id', 'title', 'channelTitle'];
@@ -41,41 +43,30 @@ export class ResultListComponent implements OnInit {
 
   }
 
-  next() {
-    this.service.getMoreItems();
+  pageEvent(event: PageEvent) {
+    if (event.previousPageIndex < event.pageIndex) {
+      this.service.getMoreItems();
+    } else if (event.previousPageIndex > event.pageIndex) {
+      this.service.getLessItems();
+    }
+    window.scrollTo(0, 0);
   }
-
-  prev() {
-    this.service.getLessItems();
-  }
-
-  // pageEvent(event: PageEvent) {
-  //   if (event.previousPageIndex < event.pageIndex) {
-  //     this.service.getMoreItems();
-  //   } else if (event.previousPageIndex > event.pageIndex) {
-  //     this.service.getLessItems();
-  //   }
-  //   window.scrollTo(0, 0);
-  // }
 
   onFiltersSubmit() {
-    const filters: YoutubeDataFilters = {
-      videoTitle: this.filtersGroup.get('title').value
-    };
-    this.service.setFilters(filters);
+    this.service.setFilters(this.filtersGroup.get('filter').value);
   }
 
   setFavorite(item: YoutubeItem) {
-    this.service.setFavorite(item);
+    YoutubeDataService.setFavorite(item);
   }
 
   getFavorites() {
-    this.hidePaginator = true;
+    this.isFavorites = true;
     this.service.getFavorites();
   }
 
   getAll() {
-    this.hidePaginator = false;
+    this.isFavorites = false;
     this.service.getAll();
   }
 }
