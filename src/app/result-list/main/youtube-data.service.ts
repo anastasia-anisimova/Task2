@@ -14,7 +14,7 @@ export class YoutubeDataService {
   private filtersSubj: BehaviorSubject<string> = new BehaviorSubject('');
   private nextToken = '';
   private prevToken = '';
-  private readonly apiKey: string = 'AIzaSyA5leN1_mVGySnLd_5eMVv8jHerQbZAWts';
+  private readonly apiKey: string = 'AIzaSyBJOeLzA5pul7P940t3DDUgCfyC2bTQHOI';
   private readonly BASE_URL: string = 'https://www.googleapis.com/youtube/v3/';
 
   private readonly TOP_ANIMAL_VIDEO_URL =
